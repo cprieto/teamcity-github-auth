@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<auth-preset name="Github Authentication Module">
+    <description>Github Authentication Module</description>
+    <auth-modules>
+        <auth-module type="Github" />
+    </auth-modules>
+</auth-preset>
