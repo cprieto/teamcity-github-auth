@@ -11,9 +11,6 @@ import javax.security.auth.spi.LoginModule;
 import java.util.Map;
 
 public class GithubLoginModule implements LoginModule {
-    private final String clientId = "put your client id";
-    private final String clientSecret = "put your secret id";
-
     private CallbackHandler callbackHandler;
     private NameCallback nameCallback;
     private PasswordCallback passwordCallback;
