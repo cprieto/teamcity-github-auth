@@ -18,8 +18,8 @@ public class GithubLoginModule implements LoginModule {
     private Subject subject;
     private GithubLoginClient client;
 
-    public GithubLoginModule(GithubLoginClient client) {
-        this.client = client;
+    public GithubLoginModule() {
+        this.client = new GithubLoginClientImpl();
     }
 
     @Override

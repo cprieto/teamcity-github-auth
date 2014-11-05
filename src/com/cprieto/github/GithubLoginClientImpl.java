@@ -17,7 +17,7 @@ public class GithubLoginClientImpl implements GithubLoginClient {
     private final String gitHubUri = "https://api.github.com/authorizations";
 
     @Override
-    public boolean authenticate(String username, String password) throws IOException {
+    public boolean authenticate(String username, String password) {
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
 
@@ -26,16 +26,30 @@ public class GithubLoginClientImpl implements GithubLoginClient {
 
         GithubAuthRequest request = new GithubAuthRequest(clientId, clientSecret);
 
-        ObjectMapper mapper = new ObjectMapper();
-        String data = mapper.writer().writeValueAsString(request);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String data = mapper.writer().writeValueAsString(request);
 
-        HttpMethod method = new GetMethod(gitHubUri);
+            HttpMethod method = new GetMethod(gitHubUri);
 
-        int result = client.executeMethod(method);
+            int result = client.executeMethod(method);
 
-        client = null;
+            if (result != 200) {
+                return false;
+            }
 
-        return false;
+            String response = method.getResponseBodyAsString();
+
+            GithubAuthResponse success = mapper.reader().readValue(response);
+
+            // TODO: we have to do something with the token, but it works
+        } catch (IOException ex) {
+            return false;
+        } finally {
+            client = null;
+        }
+
+        return true;
     }
 }
 
@@ -53,4 +67,16 @@ class GithubAuthRequest {
         this.clientSecret = clientSecret;
         scopes = new String[] { "user" };
     }
+}
+
+
+class GithubAuthResponse {
+    public String id;
+    public String url;
+    public String token;
+    public String note;
+    @JsonProperty("note_url") public String noteUrl;
+    @JsonProperty("created_at") public String createdAt;
+    @JsonProperty("updated_at") public String updatedAt;
+    public String[] scopes;
 }
